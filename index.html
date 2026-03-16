@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trading Morning Checklist</title>
+  <style>
+    :root{
+      --bg:#000; --panel:#0b0b0b; --panel2:#111; --border:#222; --text:#fff; --muted:#aaa;
+      --green:#22c55e; --red:#ef4444; --yellow:#eab308; --blue:#38bdf8;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.4}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    .hero,.card{background:var(--panel);border:1px solid var(--border);border-radius:24px}
+    .hero{padding:28px;margin-bottom:20px}
+    h1{margin:0 0 8px;font-size:40px}
+    h2{margin:0 0 12px;font-size:28px}
+    h3{margin:0 0 8px;font-size:20px}
+    .muted{color:var(--muted)}
+    .grid{display:grid;gap:18px}
+    .main{grid-template-columns:1.2fr .8fr}
+    .card{padding:22px}
+    .row2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .row3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .pillgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    button.opt{background:var(--panel2);color:var(--text);border:1px solid #333;border-radius:14px;padding:10px 12px;cursor:pointer;font-size:14px}
+    button.opt.active{background:#fff;color:#000;border-color:#fff}
+    textarea{width:100%;min-height:110px;background:var(--panel2);color:#fff;border:1px solid #333;border-radius:14px;padding:12px;font:inherit}
+    .result{border-radius:22px;padding:20px;border:1px solid #333;background:#101010}
+    .result.long{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.10)}
+    .result.short{border-color:rgba(56,189,248,.45);background:rgba(56,189,248,.10)}
+    .result.wait{border-color:rgba(234,179,8,.45);background:rgba(234,179,8,.10)}
+    .result.stop{border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.10)}
+    .mini{padding:14px;border:1px solid var(--border);border-radius:18px;background:var(--panel2)}
+    .list .item{display:flex;gap:10px;padding:12px;border:1px solid var(--border);border-radius:16px;background:var(--panel2);margin-bottom:10px}
+    .num{width:28px;height:28px;flex:0 0 28px;border-radius:50%;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+    .flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .flow .mini .badge{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#777}
+    .flow .answers{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .yes,.no{padding:10px;border-radius:12px;border:1px solid}
+    .yes{border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.10)}
+    .no{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.10)}
+    .hint{font-size:12px;color:#8f8f8f;margin-top:6px}
+    @media (max-width: 900px){
+      .main,.row2,.row3,.flow,.pillgrid{grid-template-columns:1fr}
+      h1{font-size:30px} h2{font-size:24px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="muted" style="text-transform:uppercase;letter-spacing:.25em;font-size:12px">Interactive Morning Trading Workflow</div>
+      <h1>If it’s this, do this.</h1>
+      <div class="muted">Use this before every trading session so 15m and 5m stop inventing trades. 1D = context, 4H = decision, 1H = refinement.</div>
+    </div>
+
+    <div class="grid main">
+      <div class="grid">
+        <div class="card">
+          <h2>Decision Engine</h2>
+          <div class="grid row2">
+            <div>
+              <h3>1D Context</h3>
+              <div class="pillgrid">
+                <button type="button" class="opt" data-group="dailyContext" data-value="bullish">Bullish</button>
+                <button type="button" class="opt" data-group="dailyContext" data-value="bearish">Bearish</button>
+                <button type="button" class="opt" data-group="dailyContext" data-value="mixed">Mixed</button>
+              </div>
+              <div class="hint">(Bullish = price holding above demand / making higher highs. Bearish = below resistance / making lower lows.)</div>
+            </div>
+            <div>
+              <h3>4H Structure</h3>
+              <div class="pillgrid">
+                <button type="button" class="opt" data-group="structure4h" data-value="bullish">Bullish</button>
+                <button type="button" class="opt" data-group="structure4h" data-value="bearish">Bearish</button>
+                <button type="button" class="opt" data-group="structure4h" data-value="mixed">Mixed</button>
+              </div>
+              <div class="hint">(Bullish = higher highs / higher lows. Bearish = lower highs / lower lows. Mixed = chop / overlap.)</div>
+            </div>
+            <div>
+              <h3>At a Real Level?</h3>
+              <div class="pillgrid">
+                <button type="button" class="opt" data-group="atLevel" data-value="yes">Yes</button>
+                <button type="button" class="opt" data-group="atLevel" data-value="no">No</button>
+              </div>
+              <div class="hint">(Real level = demand, supply, reclaim zone, broken support/resistance, trendline retest.)</div>
+            </div>
+            <div>
+              <h3>Did 4H Confirm?</h3>
+              <div class="pillgrid">
+                <button type="button" class="opt" data-group="confirmation4h" data-value="yes">Yes</button>
+                <button type="button" class="opt" data-group="confirmation4h" data-value="no">No</button>
+              </div>
+              <div class="hint">(Confirm = bullish or bearish 4H close, reclaim, rejection, engulfing, trendline break on close.)</div>
+            </div>
+            <div>
+              <h3>Are 15m / 5m Controlling You?</h3>
+              <div class="pillgrid">
+                <button type="button" class="opt" data-group="lowerTfControl" data-value="yes">Yes</button>
+                <button type="button" class="opt" data-group="lowerTfControl" data-value="no">No</button>
+              </div>
+              <div class="hint">(Yes = you want to enter/exit because the 15m feels urgent. No = 15m is only helping timing.)</div>
+            </div>
+          </div>
+          <div style="margin-top:16px">
+            <h3>Notes</h3>
+            <textarea id="notes" placeholder="Example: 1D oversold (RSI ~30), 4H reclaiming broken support, 1H divergence forming, waiting for 4H close..."></textarea>
+          </div>
+          <div style="margin-top:12px">
+            <button type="button" class="opt" id="resetBtn">Reset</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Quick Definitions</h2>
+          <div class="grid row3">
+            <div class="mini">
+              <h3>Oversold</h3>
+              <div class="muted">(Usually RSI under 30)</div>
+              <p>Market is stretched down. This is <b>context</b>, not an automatic buy signal.</p>
+            </div>
+            <div class="mini">
+              <h3>Overbought</h3>
+              <div class="muted">(Usually RSI above 70)</div>
+              <p>Market is stretched up. This is <b>context</b>, not an automatic short signal.</p>
+            </div>
+            <div class="mini">
+              <h3>Divergence</h3>
+              <div class="muted">(Price and RSI disagree)</div>
+              <p>Bullish divergence = price lower low, RSI higher low. Bearish divergence = price higher high, RSI lower high.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Workflow Cards</h2>
+          <div class="grid row3">
+            <div class="mini">
+              <h3>1D Context</h3>
+              <div class="muted">Start here every morning</div>
+              <ul>
+                <li>Near major demand → possible reversal zone</li>
+                <li>Near major supply → possible rejection zone</li>
+                <li>Middle of nowhere → no edge yet</li>
+                <li>Deep RSI stretch → context only, not entry</li>
+              </ul>
+            </div>
+            <div class="mini">
+              <h3>4H Structure</h3>
+              <div class="muted">This decides the trade bias</div>
+              <ul>
+                <li>HH + HL → bullish structure</li>
+                <li>LH + LL → bearish structure</li>
+                <li>Choppy overlap → low conviction / no-trade</li>
+                <li>At key level → wait for confirmation</li>
+              </ul>
+            </div>
+            <div class="mini">
+              <h3>1H Refinement</h3>
+              <div class="muted">Use only after 4H gives the setup</div>
+              <ul>
+                <li>Acceleration into level → be careful of chasing</li>
+                <li>Stalling at level → better for timing</li>
+                <li>Divergence → supportive, not primary</li>
+                <li>Weak bounce → supports continuation short</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div id="resultBox" class="result">
+          <div class="muted" style="text-transform:uppercase;letter-spacing:.25em;font-size:12px">Trade Read</div>
+          <h2 id="resultTitle" style="margin-top:10px">Incomplete</h2>
+          <div id="resultSummary" class="muted">Answer all decision boxes to get a trade read.</div>
+          <div class="mini" style="margin-top:14px">
+            <div class="muted" style="text-transform:uppercase;letter-spacing:.2em;font-size:11px">Action</div>
+            <div id="resultAction" style="margin-top:8px">No action yet.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Decision Flow</h2>
+          <div class="flow">
+            <div class="mini">
+              <div class="badge">Step 1</div>
+              <div style="margin-top:8px;font-weight:600">Did 1D + 4H point the same way?</div>
+              <div class="answers">
+                <div class="yes"><b>Yes</b><br>Continue</div>
+                <div class="no"><b>No</b><br>Wait / no-trade</div>
+              </div>
+            </div>
+            <div class="mini">
+              <div class="badge">Step 2</div>
+              <div style="margin-top:8px;font-weight:600">Is price at a real level?</div>
+              <div class="answers">
+                <div class="yes"><b>Yes</b><br>Continue</div>
+                <div class="no"><b>No</b><br>Wait for location</div>
+              </div>
+            </div>
+            <div class="mini">
+              <div class="badge">Step 3</div>
+              <div style="margin-top:8px;font-weight:600">Did 4H confirm?</div>
+              <div class="answers">
+                <div class="yes"><b>Yes</b><br>Plan entry</div>
+                <div class="no"><b>No</b><br>No trade</div>
+              </div>
+            </div>
+            <div class="mini">
+              <div class="badge">Step 4</div>
+              <div style="margin-top:8px;font-weight:600">Is 15m helping timing?</div>
+              <div class="answers">
+                <div class="yes"><b>Yes</b><br>Execute</div>
+                <div class="no"><b>No</b><br>Step back to 4H</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Daily Bias Template</h2>
+          <div class="list">
+            <div class="item">1D context: bullish / bearish / mixed</div>
+            <div class="item">4H structure: bullish / bearish / mixed</div>
+            <div class="item">Key zone today: demand at ___ / resistance at ___</div>
+            <div class="item">Bias: only long / only short / no-trade</div>
+            <div class="item">Trigger needed: 4H reclaim / 4H rejection / 1H rollover</div>
+            <div class="item">Invalidation: if price closes above / below ___</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Non-Negotiables</h2>
+          <div class="list">
+            <div class="item"><div class="num">1</div><div>1D = context</div></div>
+            <div class="item"><div class="num">2</div><div>4H = decision</div></div>
+            <div class="item"><div class="num">3</div><div>1H = refinement</div></div>
+            <div class="item"><div class="num">4</div><div>15m / 5m = informational only</div></div>
+            <div class="item"><div class="num">5</div><div>Oversold is not a buy signal by itself</div></div>
+            <div class="item"><div class="num">6</div><div>Demand / supply touch alone is not enough</div></div>
+            <div class="item"><div class="num">7</div><div>4H close matters more than intrabar noise</div></div>
+            <div class="item"><div class="num">8</div><div>If the plan is not clear before entry, there is no trade</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const state = { dailyContext:'', structure4h:'', atLevel:'', confirmation4h:'', lowerTfControl:'' };
+
+  function setActive(group, value){
+    state[group] = value;
+    document.querySelectorAll('[data-group]').forEach(btn => {
+      if(btn.dataset.group === group){
+        btn.classList.toggle('active', btn.dataset.value === value);
+      }
+    });
+    renderResult();
+  }
+
+  function renderResult(){
+    const box = document.getElementById('resultBox');
+    const title = document.getElementById('resultTitle');
+    const summary = document.getElementById('resultSummary');
+    const action = document.getElementById('resultAction');
+
+    box.className = 'result';
+
+    if(!state.dailyContext || !state.structure4h || !state.atLevel || !state.confirmation4h || !state.lowerTfControl){
+      title.textContent = 'Incomplete';
+      summary.textContent = 'Answer all decision boxes to get a trade read.';
+      action.textContent = 'No action yet.';
+      return;
+    }
+
+    if(state.confirmation4h === 'no'){
+      box.classList.add('stop');
+      title.textContent = 'No Trade';
+      summary.textContent = 'No 4H confirmation means the setup is not valid yet.';
+      action.textContent = 'Wait. Do not let lower timeframes invent the trade.';
+      return;
+    }
+
+    if(state.atLevel === 'no'){
+      box.classList.add('wait');
+      title.textContent = 'No Trade';
+      summary.textContent = 'Price is not at a meaningful location.';
+      action.textContent = 'Wait for demand, supply, reclaim, or rejection area.';
+      return;
+    }
+
+    if(state.lowerTfControl === 'yes'){
+      box.classList.add('wait');
+      title.textContent = 'Step Back';
+      summary.textContent = '15m / 5m are controlling the idea instead of refining it.';
+      action.textContent = 'Go back to 4H and make the decision there.';
+      return;
+    }
+
+    if(state.dailyContext === 'bullish' && state.structure4h === 'bullish'){
+      box.classList.add('long');
+      title.textContent = 'Long Bias';
+      summary.textContent = 'Daily context and 4H structure align bullishly.';
+      action.textContent = 'Look only for longs that match your confirmation rules and defined risk.';
+      return;
+    }
+
+    if(state.dailyContext === 'bearish' && state.structure4h === 'bearish'){
+      box.classList.add('short');
+      title.textContent = 'Short Bias';
+      summary.textContent = 'Daily context and 4H structure align bearishly.';
+      action.textContent = 'Look only for shorts that match your continuation or failed-reclaim rules.';
+      return;
+    }
+
+    box.classList.add('wait');
+    title.textContent = 'Mixed / Conditional';
+    summary.textContent = 'Timeframes are mixed. There may be a setup, but it is not clean.';
+    action.textContent = 'Reduce aggression, demand stronger confirmation, or wait.';
+  }
+
+  document.querySelectorAll('[data-group]').forEach(btn => {
+    btn.addEventListener('click', function(){
+      setActive(this.dataset.group, this.dataset.value);
+    });
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.dailyContext=''; state.structure4h=''; state.atLevel=''; state.confirmation4h=''; state.lowerTfControl='';
+    document.querySelectorAll('[data-group]').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('notes').value = '';
+    renderResult();
+  });
+
+  renderResult();
+</script>
+</body>
+</html>
